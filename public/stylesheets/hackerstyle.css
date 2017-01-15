@@ -1,0 +1,29 @@
+body {
+  background: black;
+}
+
+p {
+  z-index:100;
+  font-family:Courier;
+  color: green;
+  background: black;
+  padding: 10px;
+  padding-top:0px;
+  padding-bottom:0px;
+}
+
+#cmd {
+  z-index:1;
+  position:relative;
+  left:171px;
+  top:-35px;
+  border:0;
+  font-family:Courier;
+  color: green;
+  background: black;
+  font-size:16px;
+  width:60%;
+  box-shadow:none;
+  border-color:transparent;
+  outline: none;
+}

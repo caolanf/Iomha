@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>Erad.io</title>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <%= stylesheet_link_tag "newpost.css" %>
+</head>
+
+<body>
+	
+  <div id="header">
+	  <a href="/"><img src="images/logo.png" id="logo"></a>
+	  <a href=""><img src="images/tab.png" id="tab"></a>
+	  
+	  <% unless current_user then %>
+	    <a href="login"><p id="signin">Sign in</p></a>
+	    <a href="signup"><p id="signup">Sign up</p></a>
+	  <% else %>
+	    <a href=""><img src="images/tri.png" id="tri"></a>
+	    <a href="user/<%=current_user.username%>"><p id="c_user"><%=current_user.username%></p></a>
+	  <% end %>
+  </div>
+  
+  <div id="umenu">
+    <div class="u-content">
+      <a href="#" id="utop">Messages</a>
+      <a href="settings">Settings</a>
+      <a href="logout" id="ubottom">Sign out</a></a>
+    </div>
+  </div>
+  
+  <div id="dropmenu">
+    <div class="dropdown-content">
+      <a href="#" id="top">Help</a>
+      <a href="#">Advertising</a>
+      <a href="#">Contact us</a>
+      <a href="#">Privacy</a>
+      <a href="#">Rules</a>
+      <a href="#" id="bottom">Settings</a>
+    </div>
+  </div>
+
+  <div id="post" class="post">
+	<div id="tools">
+		
+      <img src="images/image.png" id="image">
+      <div id="img-upload">
+        <input id="img-url" placeholder="">
+      </div>
+      
+      <img src="images/poll.png" id="poll-img">
+      <div id="poll">
+      </div>
+      
+      <img id ="embed-img" src="images/embed.png">
+      <div id="embed">
+        <input id="embed-url" placeholder="">
+      </div>
+      
+    </div>
+    
+    <input placeholder="Post title" id="title"/>
+    <form id="posteditor">
+      <div class="content">
+		<p contenteditable="true"></p>
+      </div>
+      <img src="images/share.png" id="share">
+    </form>
+  </div>
+  
+  <%= form_for(@post) do |f| %>
+      <%= f.text_field :title %>
+      <%= f.text_field :imge %>
+      <%= f.text_field :content %>
+      <%= f.text_field :sub %>
+      <%= f.submit "Post", class: "btn-submit" %>
+    <% end %>
+  
+  <%= javascript_include_tag "jquery.js", "newpost.js", "index.js"  %>
+  
+  <% if current_user then %>
+      <style>
+		  body{
+		      background-image:url('<%=current_user.background%>');
+	      }
+	      #title{
+	          background:<%=current_user.main_color%> !important;
+	      }
+	      #header{
+	          background:<%=current_user.main_color%> !important;
+	      }
+	      #tools{
+		 	          background:<%=current_user.main_color%> !important;
+
+	      }
+	      #img-upload{
+			  background:<%=current_user.snd_color%> !important;
+		  }
+		  #img-url{
+			  background:<%=current_user.main_color%> !important;
+		  }
+		  #embed{
+			  background:<%=current_user.snd_color%> !important;
+		  }
+		  #embed-url{
+			  background:<%=current_user.main_color%> !important;
+		  }
+      </style>
+  <% end %>
+  
+</body>
+
+</html>

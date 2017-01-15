@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>Erad.io</title>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <%= stylesheet_link_tag "signupstyle.css" %>
+</head>
+
+<body>
+	
+  <div id="header">
+	  <a href="/"><%= image_tag "logo.png", :id => "logo" %></a>
+	  <a href=""><img src="images/tab.png" id="tab"></a>
+	  <a href="login"><p id="signin">Sign in</p></a>
+	  <a href="signup"><p id="signups">Sign up</p></a>
+  </div>
+  
+  <div id="dropmenu">
+    <div class="dropdown-content">
+      <a href="#" id="top">Help</a>
+      <a href="#">Advertising</a>
+      <a href="#">Contact us</a>
+      <a href="#">Privacy</a>
+      <a href="#">Rules</a>
+      <a href="settings.html" id="bottom">My clubs</a>
+    </div>
+  </div>
+
+  <div id="signup">
+  <h1>Sign up</h1>
+      <%= form_for(@user) do |f| %>
+        <%= f.text_field :username, :placeholder => "Username" %>
+        <%= f.email_field :email, :placeholder => "Email" %>
+        <%= f.password_field :password, :placeholder => "Password" %>
+        <%= f.submit "Create an account", class: "btn-submit" %>
+      <% end %>
+  </div>
+  
+  
+  <%= javascript_include_tag "jquery.js", "index.js"  %>
+  
+</body>
+
+</html>
