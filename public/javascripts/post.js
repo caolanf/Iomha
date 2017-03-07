@@ -1,41 +1,37 @@
 var main = function() {
 	$('#commentinp').keyup(function(event) {
 		if(event.which === 13) {
-			$('.comments').prepend('<div id="comment" class="comment"> <div class="comment-back"> <a id="comment-username" href="www.test.com">Alan</a><div id="text">' + $(this).val() + '</div><a href="#"><img class="reply" src="../../images/reply.png"></a></div></div>');
-			$('.reply').hide()
+		  
+			$('.comments').prepend('<div id="newcom" class="comment"> <div class="comment-back"> <a id="comment-username" href="www.test.com">'+$('#c_user').text()+'</a><a class="cscore">0 pts</a><a href="" class="upcp"><img src="/images/up-arrow.png" id="newcomu"class="upcom"></a><a href="" class="downcp"><img src="/images/down-arrow.png" id="newcomd"class="downcom"></a><div id="text">' + $(this).val() + '</div><a class="reply" href="#">reply</a></div></div>');
 			$('#commentinp').val('')
 		}
 	});
 	
-	$('.reply').click(function() {
-		$('<input class="rinp">').insertAfter($(this).parent().parent());
+	$('.reply').click(function($e) {
+		$(this).parent().parent().children('.r_comment').toggle();
+		if($('.expand', $(this).parent()).attr('src') == '../../images/collapse.png') {
+		    $('.expand', $(this).parent()).attr('src','../../images/expand.png');
+	    }else {
+			$('.expand', $(this).parent()).attr('src','../../images/collapse.png');
+		}
+		
+		$('<input class="rinp" placeholder="Write a reply">').insertAfter($(this).parent());
 		$e.preventDefault();
 	});
-	$('.r-reply').click(function() {
-		$('<input class="rinp">').insertAfter($(this).parent().parent());
+	$('.r-reply').click(function($e) {
+		$(this).parent().parent().parent().children('.r_comment').toggle();
+		if($('.expand', $(this).parent().parent()).attr('src') == '../../images/collapse.png') {
+		    $('.expand', $(this).parent().parent()).attr('src','../../images/expand.png');
+	    }else {
+			$('.expand', $(this).parent().parent()).attr('src','../../images/collapse.png');
+		}
+		
+		$('<input class="rinp" placeholder="Write a reply">').insertAfter($(this).parent());
 		$e.preventDefault();
 	});
 	
-	$('.reply').hide();
 	$('.r-reply').hide();
 	$('.r_comment').hide();
-	
-	$('.comments').mouseenter(function() {
-		$('.comment-back').each(function(i, comment) {
-			$(comment).mouseenter(function() {
-				$('.reply', comment).show();
-			}).mouseleave(function() {
-				$('.reply', this).hide();
-			});
-		});
-		$('.r-comment-back').each(function(i, comment) {
-			$(comment).mouseenter(function() {
-				$('.r-reply', comment).show();
-			}).mouseleave(function() {
-				$('.r-reply', this).hide();
-			});
-		});
-	});
 	
 	$('#smenu').hide();
 	$('#share').click(function($e) {
@@ -49,14 +45,25 @@ var main = function() {
 		$('.u-content').toggle();
 	});
 	
-	$('.comment').click(function() {
+	$('.comment-back').click(function() {
 		if($('.expand', this).attr('src') == '../../images/collapse.png') {
 		    $('.expand', this).attr('src','../../images/expand.png');
 	    }else {
 			$('.expand', this).attr('src','../../images/collapse.png');
 		}
-	    $('.r_comment', this).toggle();
+	    $(this).parent().children('.r_comment').toggle();
+	    
 	});
+	$('.r-comment-back').click(function() {
+		if($('.expand', this).attr('src') == '../../images/collapse.png') {
+		    $('.expand', this).attr('src','../../images/expand.png');
+	    }else {
+			$('.expand', this).attr('src','../../images/collapse.png');
+		}
+	    $(this).parent().children('.r_comment').toggle();
+	    
+	});
+	
 	$('#upvote').click(function($e) {
 		$e.preventDefault();
 		$.ajax({
@@ -78,6 +85,24 @@ var main = function() {
 		});
 		
     });
+    
+    $("body").on("keyup", '.rinp', function() {
+		console.log('ay');
+		if(event.which === 13) {
+			$(this).parent().children('.r_comment').show();
+			$('.expand', $(this).parent()).attr('src','../../images/collapse.png');
+			
+			$('<div id="newcom" class="r_comment"> <div class="r-comment-back"> <a id="comment-username" href="www.test.com">'+$('#c_user').text()+'</a><a class="cscore">0 pts</a><a href="" class="upcp"><img src="/images/up-arrow.png" id="newcomu"class="upcom"></a><a href="" class="downcp"><img src="/images/down-arrow.png" id="newcomd"class="downcom"></a><div id="text">' + $(this).val() + '</div><a class="reply" href="#">reply</a></div></div>').insertAfter($(this));
+			$('#rinp').val('')
+			$('#commentinp').val($(this).val());
+			$('#comment_parent').val($(this).parent().attr('id') );
+			$('#commentf').submit();
+			$('#commentinp').val('');
+			$('#comment_parent').val('0');
+			$(this).remove();
+		}
+	});
+
 	
 	
 	$('.dropdown-content').hide();
@@ -93,6 +118,65 @@ var main = function() {
 		    console.log('ayy');
 		}
 	});
+	
+	$('.upcom').click(function($e) {
+		$(this).parent().parent().parent().children('.r_comment').toggle();
+		if($('.expand', $(this).parent().parent()).attr('src') == '../../images/collapse.png') {
+		    $('.expand', $(this).parent().parent()).attr('src','../../images/expand.png');
+	    }else {
+			$('.expand', $(this).parent().parent()).attr('src','../../images/collapse.png');
+		}
+		
+		console.log('fasdasfd');
+	    $e.preventDefault();
+	    test = $(this).parent().siblings('.cscore');
+	    $(this).css({opacity: 1});
+	    $(this).parent().siblings(".downcp").children(".downcom").fadeTo('fast', 0.6, function() {
+				
+	    });
+	    $.ajax({
+			url: '/comments/'+$(this).attr('id')+'/upvote',
+			success: function(data) {
+				test.text(data.split("<body")[1].split(">").slice(1).join(">").split("</body>")[0]+ ' pts');
+                return data;
+            }
+		});
+	});
+	$('.downcom').click(function($e) {
+		$(this).parent().parent().parent().children('.r_comment').toggle();
+		if($('.expand', $(this).parent().parent()).attr('src') == '../../images/collapse.png') {
+		    $('.expand', $(this).parent().parent()).attr('src','../../images/expand.png');
+	    }else {
+			$('.expand', $(this).parent().parent()).attr('src','../../images/collapse.png');
+		}
+		
+	    $e.preventDefault();
+	    test = $(this).parent().siblings('.cscore');
+	    $(this).css({opacity: 1});
+	    $(this).parent().siblings(".upcp").children(".upcom").fadeTo('fast', 0.6, function() {
+		
+	    });
+	    $.ajax({
+			url: '/comments/'+$(this).attr('id')+'/downvote',
+			success: function(data) {
+				test.text(data.split("<body")[1].split(">").slice(1).join(">").split("</body>")[0] + ' pts');
+				console.log(data.split("<body")[1].split(">").slice(1).join(">").split("</body>")[0]);
+                return data;
+            }
+		});
+	});
+	
+	$('#commentf').submit(function($e){
+      $.ajax({
+        type: this.method,
+        url: this.action,
+        data: $(this).serialize(),
+        success: function(){
+          
+        }
+      });
+      return false;
+    });
 	
 }
 

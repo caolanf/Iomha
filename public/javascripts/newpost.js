@@ -1,4 +1,5 @@
 var main = function() {
+	$('#subs').hide();
 	$('#img-upload').hide();
 	$('#embed').hide();
 	
@@ -19,16 +20,28 @@ var main = function() {
 		}
 	});
 	
+	
 	$('#embed-img').click(function() {
 	    $('#embed').fadeToggle(200);
 	    $('#img-upload').fadeOut(200);
 	});
 	$('#embed-url').keyup(function(event) {
 		if(event.which == 13) {
-			if($("#content-img").length == 0) {
-			    $('.content').prepend('<iframe id="content-img" height="297.5625px" src="' + $(this).val() + '"></iframe>');
-			} else {
-		        $('.content').append('<iframe id="content-img" height="297.5625px" src="' + $(this).val() + '"></iframe><p contenteditable="true"></p>');
+			if(/((http|https):\/\/)?(www\.)?(youtube\.com)(\/)?([a-zA-Z0-9\-\.]+)\/?/.test($(this).val())) {
+			    var id = $(this).val().match(/watch\?v=([a-zA-Z0-9\-_]+)/)[1];
+			    if($("#content-img").length == 0) {
+					$('.content').prepend('<iframe id="content-img" height="297.5625px" src="https://www.youtube.com/embed/' + id + '" allowfullscreen></iframe>');
+				} else {
+					$('.content').append('<iframe id="content-img" height="297.5625px" src="https://www.youtube.com/embed/' + id + '" allowfullscreen></iframe><p contenteditable="true"></p>');
+				}
+				$('#post_imge').val($('#post_imge').val()+' ' + '(embed)https://youtube.com/embed/' + id);
+			} else{
+				if($("#content-img").length == 0) {
+					$('.content').prepend('<iframe id="content-img" height="297.5625px" src="' + $(this).val() + '"></iframe>');
+				}else {
+					$('.content').append('<iframe id="content-img" height="297.5625px" src="' + $(this).val() + '"></iframe><p contenteditable="true"></p>');
+				}
+				$('#post_imge').val($('#post_imge').val() + '(embed)' + $(this).val() + ' ');
 		    }
 			$('#embed-url').val('');
 			$('#embed').fadeToggle(200);
@@ -36,10 +49,23 @@ var main = function() {
 	});
 	
 	$('#share').click(function() {
-		$('#post_title').val($('#title').val())
-		$('#post_content').val($('.content').text());
-		$('#post_sub').val(('gyy'));
-		$('#new_post').submit();
+	    $('#subs').animate({'width': 'toggle'});
+	});
+	
+	$('#subs').keyup(function($e) {
+		if(event.which == 13) {
+			var tcontent = ''
+			$('.content').children('p').each(function() {
+				tcontent += $(this).text()+'(newpar)';
+			});
+			$('#post_title').val($('#title').val())
+			$('#post_content').val(tcontent);
+			$('#post_sub').val($(this).val());
+			$('#new_post').submit();
+		}
+	});
+	$("#posteditor").submit(function(e){
+		return false;
 	});
 	
 }

@@ -10,6 +10,8 @@
 
 <body>
 	
+   <%= javascript_include_tag "jquery.js", "post.js"  %>
+	
   <div id="header">
 	  <a href="/"><img src="../../images/logo.png" id="logo"></a>
 	  <a href=""><img src="../../images/tab.png" id="tab"></a>
@@ -18,43 +20,55 @@
 	    <a href="../../login"><p id="signin">Sign in</p></a>
 	    <a href="../../signup"><p id="signup">Sign up</p></a>
 	  <% else %>
-	    <a href=""><img src="../../images/tri.png" id="tri"></a>
+	    <% if current_user.notifications > 0 then %>
+	      <a href=""><img src="/images/trired.png" id="tri"></a>
+	    <% else %>
+	      <a href=""><img src="/images/tri.png" id="tri"></a>
+	    <% end %>
 	    <a href="../../user/<%=current_user.username%>"><p id="c_user"><%=current_user.username%></p></a>
 	  <% end %>
   </div>
   
-  <div id="dropmenu">
-    <div class="dropdown-content">
-      <a href="#" id="top">Help</a>
-      <a href="#">Advertising</a>
-      <a href="#">Contact us</a>
-      <a href="#">Privacy</a>
-      <a href="#">Rules</a>
-      <a href="#" id="bottom">Settings</a>
+  <div id="umenu">
+    <div class="u-content">
+      <a href="/messages" id="utop">Messages</a>
+      <a href="/post">Post</a>
+      <a href="/themes">Themes</a>
+      <a href="/logout" id="ubottom">Sign out</a></a>
     </div>
   </div>
   
-  <div id="umenu">
-    <div class="u-content">
-      <a href="#" id="utop">Messages</a>
-      <a href="../../settings">Settings</a>
-      <a href="../../logout" id="ubottom">Sign out</a></a>
+  <div id="dropmenu">
+    <div class="dropdown-content">
+      <a href="/help" id="top">Help</a>
+      <a href="/contact">Contact</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/rules"id="bottom">Rules</a>
     </div>
   </div>
-
   <div id="article">
     <h1><%= @post.title %></h1>
       
     <div id="content">
-	  <% if @post.imge != "" %>
-	    <img src="<%=@post.imge%>">
+	  <% for i in 0 ... @stuff.size %>
+	    <% if @stuff[i][0..6] == '(embed)' %>
+	      <iframe id="content-img" height="297.5625px" src=<%=@stuff[i][7..@stuff[i].length]%> allowfullscreen></iframe>
+	    <% else %>
+	      <img src="<%=@stuff[i]%>">
+	    <% end %>
+	    <p class="text"><%= @content[i] %></p>
 	  <% end %>
-      <%= @post.content %>
+	  
       <div id="vote">
         <a href=""><img src="../../images/up-arrow.png" id="upvote"></a>
         <a href=""><img src="../../images/down-arrow.png" id="downvote"></a>
         <div id="points"><%= @post.score %> points</div>
         <a href=""><img src="../../images/share.png" id="share"></a>
+        <% if current_user then %>
+          <% if current_user.username == @post.author then %>
+            <a href="/i/<%=@post.sub%>/<%=@post.id%>/delete"><img src="../../images/delete.png" id="delete"></a>
+          <% end %>
+        <% end %>
         
         <div id="smenu">
           <img src="../../images/icons/facebook.png">
@@ -71,17 +85,56 @@
       </div>
     </div>
     
-    <input placeholder="Write a comment" id="commentinp">
+    <%= form_for(:comment, :remote => true, :html => {:id => "commentf"}) do |f| %>
+      <%= f.text_field :text, :placeholder => "Write a comment", :id => "commentinp" %>
+      <%= f.text_field :post, :hidden => "true", :value => @post.id %>
+      <%= f.text_field :sub, :hidden => "true", :value => @post.sub %>
+      <%= f.text_field :parent, :hidden => "true", :value => "0" %>
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <%= f.submit :hidden => "true"%>
+    <% end %>
     
     <div id="comments" class="comments">
+	  
+	  <% @comments = [] %>
+	  <% @post.comments.each do |comment, i| %>
+	    <% @comments.push(Comment.find(comment)) %>
+	  <% end %>
+	  
+	  <% @comments = @comments.sort_by { |a| -(a.score.to_i) } %>
+	  <% @comments.sort!{ |a,b| a.layer <=> b.layer.downcase } %>
+	  
+      <% @comments.each do |comment| %>
+        <% if comment.layer == '0' then %>
+          <div id=<%=comment.id%> class="comment">
+            <div class="comment-back" id="b<%=comment.id%>">
+		      <a id="comment-username" href="/user/<%=comment.author%>"><%=comment.author%></a>
+		      <a class="cscore"><%=comment.score%> pts</a>
+		      <a href="" class="upcp"><img src="/images/up-arrow.png" id="<%=comment.id%>"class="upcom"></a>
+		      <a href="" class="downcp"><img src="/images/down-arrow.png" id="<%=comment.id%>"class="downcom"></a>
+		      <div id="text">
+		        <%= comment.text %>
+		      </div>
+		      <a class="reply" href="#">reply</a>
+		    </div>
+		  </div>
+		<% else %>
+		  <script>
+			parent = $('#<%=comment.parent%>');
+			parent.append('<div id="<%=comment.id%>" class="r_comment"> <div class="r-comment-back" id="b<%=comment.id%>"> <a id="comment-username" href="/users/<%=comment.author%>"><%=comment.author%></a><a class="cscore"><%=comment.score%> pts</a><a href="" class="upcp"><img src="/images/up-arrow.png" id="<%=comment.id%>"class="upcom"></a> <a href="" class="downcp"><img src="/images/down-arrow.png" id="<%=comment.id%>"class="downcom"></a> <div id="text"><%=comment.text%></div><a class="reply" href="#">reply</a></div></div>');
+		    parentback = $('#b<%=comment.parent%>');
+		    parentback.append('<a href="#"><img class="expand" src="../../images/expand.png"></a>');
+		  </script>
+        <% end %>
+      <% end %>
 		
-	  <div id="comment" class="comment">
+	 <!--- <div id="comment" class="comment">
 		<div class="comment-back">
 		  <a id="comment-username" href="www.test.com">Alan</a>
 		  <div id="text">
 		  Very good video!
 		  </div>
-		  <a href="#"><img class="reply" src="../../images/reply.png"></a>
+		  <a href="" class="areply"><img class="reply" src="../../images/reply.png"></a>
 		  <a href="#"><img class="expand" src="../../images/expand.png"></a>
 		</div>
 		
@@ -91,16 +144,14 @@
 		    <div id="text">
 		    I agree, that video was good.
 		    </div>
-            <a href="#"><img class="r-reply" src="../../images/reply.png"></a>
+            <a class="tester" href="#"><img class="r-reply" src="../../images/reply.png"></a>
           </div>
         </div>
-	  </div>
+	  </div> --->
 	  
 	</div>
       
   </div>
-  
-  <%= javascript_include_tag "jquery.js", "post.js"  %>
   
   <% if current_user then %>
       <style>
@@ -120,21 +171,18 @@
 	      #comment-username{
 			  color:<%=current_user.snd_color%> !important;
 		  }
-		  .reply{
-			  background-color:<%=current_user.main_color%>;
-		  }
 		  .r-reply{
 			  background-color:<%=current_user.main_color%>;
 		  }
 		  #smenu{
 			  border-color:<%=current_user.main_color%> !important;
 		  }
-		  <% if @post.id.in?(current_user.upvoted) then %>
+		  <% if @post.id.to_s.in?(current_user.upvoted) then %>
 		      #upvote{
 				  opacity: 1 !important;
 			  }
 		  <% end %>
-		  <% if @post.id.in?(current_user.downvoted) then %>
+		  <% if @post.id.to_s.in?(current_user.downvoted) then %>
 		      #downvote{
 				  opacity: 1 !important;
 			  }

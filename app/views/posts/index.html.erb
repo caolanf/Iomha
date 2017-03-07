@@ -25,45 +25,143 @@
   
   <div id="umenu">
     <div class="u-content">
-      <a href="#" id="utop">Messages</a>
-      <a href="settings">Settings</a>
-      <a href="logout" id="ubottom">Sign out</a></a>
+      <a href="/messages" id="utop">Messages</a>
+      <a href="/post">Post</a>
+      <a href="/themes">Themes</a>
+      <a href="/logout" id="ubottom">Sign out</a></a>
     </div>
   </div>
   
   <div id="dropmenu">
     <div class="dropdown-content">
-      <a href="#" id="top">Help</a>
-      <a href="#">Advertising</a>
-      <a href="#">Contact us</a>
-      <a href="#">Privacy</a>
-      <a href="#">Rules</a>
-      <a href="settings.html" id="bottom">Your clubs</a></a>
+      <a href="/help" id="top">Help</a>
+      <a href="/contact">Contact</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/rules"id="bottom">Rules</a>
     </div>
   </div>
 
   <div id="article">
-    <h1>Top posts</h1>
+    <h1>D</h1>
+    <div id="sortcont">
+		<a href="#" class="postso">
+		  <span id="anitit">Top posts</span>
+		</a>
+		<div id="postsort">
+		<div class="postsort-content">
+		  <a href="/new" id="top">Newest</a>
+		  <a href="/top/today">Top today</a>
+		  <a href="/top/week">Top this week</a>
+		  <a href="/top/year">Top this year</a>
+		  <a href="/top/alltime" id="bottom">Top all time</a>
+		</div>
+	  </div>
+    
+  </div>
+    
       
     <div id="content">
 	  <% @posts.each do |post| %>
+	    <% @time = Time.now-post.created_at %>
+	    <% if @time > 31557600 then %>
+	      <% @time /= 31557600 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' years ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' year ago' %>
+	      <% end %>
+	    <%elsif @time > 2592000 then %>
+	      <% @time /= 2592000 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' months ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' month ago' %>
+	      <% end %>
+	    <%elsif @time > 604800 then %>
+	      <% @time /= 604800 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' weeks ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' week ago' %>
+	      <% end %>
+	    <%elsif @time > 86400 then %>
+	      <% @time /= 86400 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' days ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' day ago' %>
+	      <% end %>
+	    <%elsif @time > 3600 then %>
+	      <% @time /= 3600 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' hours ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' hour ago' %>
+	      <% end %>
+	    <%elsif @time > 60 then %>
+	      <% @time /= 60 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' minutes ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' minute ago' %>
+	      <% end %>
+	    <% else %>
+	      <% @time = ' just now' %>
+	    <% end %>
+	      
         <div id="post">
 		  <div id="score"><%= post.score %></div>
-		  <a href="" id="upp" ><img src="images/up-arrow.png" id="<%=post.sub%>/<%=post.id%>" class="up" ></a>
-		  <a href="" id="downp" ><img src="images/down-arrow.png" id="<%=post.sub%>/<%=post.id%>" class="down"  ></a>
+		  <a href="" id="upp" ><img src="images/up-arrow.png" id="u<%=post.id%>" class="up" ></a>
+		  <a href="" id="downp" ><img src="images/down-arrow.png" id="d<%=post.id%>" class="down"  ></a>
           <a href="i/<%= post.sub %>/<%= post.id %>" id="ptitle"> <%= post.title %> </a>
-          <div id="info">submitted 1 hour ago by <a><%= post.author %></a> to <a href="i/<%=post.sub %>">/i/<%= post.sub %></a></div>
-          <div id="commentsd">189 comments</div>
+          <div id="info">submitted <%=@time%> by <a href="/user/<%=post.author%>"><%= post.author %></a> to <a href="i/<%=post.sub %>">/i/<%= post.sub %></a></div>
+          <div id="commentsd"><%=post.comments.length.to_s%> comments</div>
+          <% if current_user then %>
+            <% if post.id.to_s.in?(current_user.upvoted) then %>
+		      <style>
+				#u<%=post.id%> { 
+				  opacity: 1;
+				}
+		      </style>
+		    <% end %>
+		    <% if post.id.to_s.in?(current_user.downvoted) then %>
+		      <style>
+			     #d<%=post.id%> { 
+			       opacity: 1;
+			     }
+		      </style>
+		    <% end %>
+		   <% end %>
         </div>
       <% end %>
     </div>
-      
+  <div id="cenpag">
+  <div class="pagination">
+  <a href="#" class="leftmost">&laquo;</a>
+  <a href="#" class="active">1</a>
+  <a href="#">2</a>
+  <a href="#">3</a>
+  <a href="#">4</a>
+  <a href="#">5</a>
+  <a href="#">6</a>
+  <a href="#" class="rightmost">&raquo;</a>
+</div>
   </div>
   
   <%= javascript_include_tag "jquery.js", "index.js", "posts.js"  %>
   
   <% if current_user then %>
       <style>
+		  .pagination a.active {
+             background-color:<%=current_user.main_color%> !important;
+             border: 1px solid <%=current_user.main_color%> !important;
+          }
 		  body{
 		      background-image:url('<%=current_user.background%>');
 	      }
@@ -79,6 +177,10 @@
 	      }
 	      #ptitle{
 			  color:<%=current_user.snd_color %> !important;
+		  }
+		  .postso{
+			  background:<%=current_user.main_color%> !important;
+			  border: 1px solid <%=current_user.main_color%>;
 		  }
       </style>
   <% end %>

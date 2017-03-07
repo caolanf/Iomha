@@ -11,10 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161129152348) do
+ActiveRecord::Schema.define(version: 20170123210618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "comments", force: :cascade do |t|
+    t.string   "author"
+    t.string   "text"
+    t.string   "score"
+    t.string   "parent"
+    t.string   "post"
+    t.string   "sub"
+    t.string   "layer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "posts", force: :cascade do |t|
     t.string   "title"
@@ -23,8 +35,9 @@ ActiveRecord::Schema.define(version: 20161129152348) do
     t.string   "score"
     t.string   "sub"
     t.string   "imge"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text     "comments",   default: [],              array: true
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -33,6 +46,10 @@ ActiveRecord::Schema.define(version: 20161129152348) do
     t.string   "password_digest"
     t.text     "upvoted",         default: [],                                          array: true
     t.text     "downvoted",       default: [],                                          array: true
+    t.text     "upvoted_c",       default: [],                                          array: true
+    t.text     "downvoted_c",     default: [],                                          array: true
+    t.text     "replies",         default: [],                                          array: true
+    t.integer  "notifications",   default: 0
     t.string   "background",      default: "../../images/snowyforest.jpg"
     t.string   "main_color",      default: "#3399cc"
     t.string   "snd_color",       default: "#6699ff"

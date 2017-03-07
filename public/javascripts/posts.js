@@ -8,7 +8,7 @@ var main = function() {
 				
 	    });
 	    $.ajax({
-			url: window.location.href+'i/'+$(this).attr('id')+'/upvote',
+			url: 'http://'+window.location.host+$(this).parent().siblings('#info').children('a').eq(1).text() + '/' + $(this).attr('id').substring(1)+'/upvote',
 			success: function(data) {
 				test.text(data.split("<body")[1].split(">").slice(1).join(">").split("</body>")[0]);
                 return data;
@@ -23,12 +23,18 @@ var main = function() {
 		
 	    });
 	    $.ajax({
-			url: window.location.href+'i/'+$(this).attr('id')+'/downvote',
+			url: 'http://'+window.location.host+$(this).parent().siblings('#info').children('a').eq(1).text() + '/' + $(this).attr('id').substring(1)+'/downvote',
 			success: function(data) {
 				test.text(data.split("<body")[1].split(">").slice(1).join(">").split("</body>")[0]);
                 return data;
             }
 		});
+	});
+	$('.postsort-content').animate({'height': 'toggle'}, 1);
+	$('#sortcont').mouseenter(function($e) {
+		$('.postsort-content').stop().animate({'height': 'toggle'});
+	}).mouseleave(function($e) {
+		$('.postsort-content').stop().animate({'height': 'toggle'});
 	});
 	
 }

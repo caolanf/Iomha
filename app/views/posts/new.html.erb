@@ -15,30 +15,33 @@
 	  <a href=""><img src="images/tab.png" id="tab"></a>
 	  
 	  <% unless current_user then %>
-	    <a href="login"><p id="signin">Sign in</p></a>
-	    <a href="signup"><p id="signup">Sign up</p></a>
+	    <a href="/login"><p id="signin">Sign in</p></a>
+	    <a href="/signup"><p id="signup">Sign up</p></a>
 	  <% else %>
-	    <a href=""><img src="images/tri.png" id="tri"></a>
+	    <% if current_user.notifications > 0 then %>
+	      <a href=""><img src="/images/trired.png" id="tri"></a>
+	    <% else %>
+	      <a href=""><img src="/images/tri.png" id="tri"></a>
+	    <% end %>
 	    <a href="user/<%=current_user.username%>"><p id="c_user"><%=current_user.username%></p></a>
 	  <% end %>
   </div>
   
   <div id="umenu">
     <div class="u-content">
-      <a href="#" id="utop">Messages</a>
-      <a href="settings">Settings</a>
-      <a href="logout" id="ubottom">Sign out</a></a>
+      <a href="/messages" id="utop">Messages</a>
+      <a href="/post">Post</a>
+      <a href="/themes">Themes</a>
+      <a href="/logout" id="ubottom">Sign out</a></a>
     </div>
   </div>
   
   <div id="dropmenu">
     <div class="dropdown-content">
-      <a href="#" id="top">Help</a>
-      <a href="#">Advertising</a>
-      <a href="#">Contact us</a>
-      <a href="#">Privacy</a>
-      <a href="#">Rules</a>
-      <a href="#" id="bottom">Settings</a>
+      <a href="/help" id="top">Help</a>
+      <a href="/contact">Contact</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/rules"id="bottom">Rules</a>
     </div>
   </div>
 
@@ -48,10 +51,6 @@
       <img src="images/image.png" id="image">
       <div id="img-upload">
         <input id="img-url" placeholder="">
-      </div>
-      
-      <img src="images/poll.png" id="poll-img">
-      <div id="poll">
       </div>
       
       <img id ="embed-img" src="images/embed.png">
@@ -66,6 +65,7 @@
       <div class="content">
 		<p contenteditable="true"></p>
       </div>
+      <input id="subs" placeholder="Share to">
       <img src="images/share.png" id="share">
     </form>
   </div>

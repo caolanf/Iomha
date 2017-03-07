@@ -8,6 +8,7 @@ class CreatePosts < ActiveRecord::Migration
       t.string :score
       t.string :sub
       t.string :imge
+      t.text :comments, array: true, default: []
 
       t.timestamps null: false
       

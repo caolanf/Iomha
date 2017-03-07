@@ -14,8 +14,39 @@ class UsersController < ApplicationController
     end
   end
   
-  def settings
+  def themes
   
+  end
+  
+  def rules
+  
+  end
+  
+  def cookies
+  
+  end
+  
+  def contact
+  
+  end
+  
+  def help
+  
+  end
+  
+  def 
+  
+  def messages
+    current_user.notifications = 0
+    current_user.save
+    @comments = Comment.where(id: current_user.replies)
+    @comments = @comments.order(:created_at)
+    @comments.reverse_order!
+  end
+  
+  def show
+    @user = User.find_by_username(params[:username])
+    @posts = Post.where(author: @user.username)
   end
   
   def updateset

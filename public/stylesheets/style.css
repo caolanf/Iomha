@@ -25,6 +25,8 @@
   color:#555;
 }
 
+
+
 #logo{
   text-decoration:none;
   border: 0 none;
@@ -76,11 +78,14 @@ body{
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
   background:#3399cc;
-  padding:20px 0;
+  padding:20px;
   font-size:140%;
   font-weight:300;
   text-align:center;
   color:#fff;
+}
+#post_title{
+  visibility: hidden;
 }
 
 #content{
@@ -102,8 +107,9 @@ body{
   border-color:transparent;
   outline: none;
 }
-#content p{
-  padding: 4% 1% 0%;
+.text {
+  padding-bottom:20px;
+  padding-top:5px;
 }
 #content a{
   color:  #6699ff;
@@ -125,6 +131,9 @@ body{
 #share{
   float:right;
 }
+#delete{
+  float:right;
+}
 #points{
   position:absolute;
   margin-top:-41px;
@@ -134,24 +143,14 @@ body{
   font-weight:600;
 }
 
-.reply{
-  width:20px;
-  background-color:#3399cc;
-  padding:22.5px;
-  position:absolute;
-  opacity:0.8;
-  margin-left:565px;
-  border-top-right-radius:25px;
-  border-bottom-right-radius:25px;
-}
 #comment-username{
   font-size:13px;
-  position:absolute;
+  position:relative;
   top:10px;
   color:#6699ff;
   text-decoration: none;
 }
-#comment{
+.comment{
   position:relative;
   font-family:'Open Sans',sans-serif;
   top:20px;
@@ -162,7 +161,7 @@ body{
   margin-left:-20px;
   
 }
-#comment:hover{
+.comment:hover{
   opacity:1;
 }
 .comment-back{
@@ -172,7 +171,7 @@ body{
   top:10px;
   margin-bottom:10px;
   width:630px;
-  padding-bottom:65px;
+  padding-bottom:43px;
   padding-left:20px;
   background:#f0f0f0;
 }
@@ -180,15 +179,16 @@ body{
 .expand{
   position:absolute;
   width:20px;
-  opacity:0.8;
+  opacity:1;
   margin-left:-45px;
-  margin-top:22px;
+  margin-top:-16px;
 }
 
 .r_comment{
   margin-left:20px;
 }
 .r-reply{
+  margin-top:-22px;
   float:right;
   width:20px;
   background-color:#3399cc;
@@ -204,7 +204,7 @@ body{
   top:10px;
   margin-bottom:10px;
   width:100%;
-  padding-bottom:65px;
+  padding-bottom:43px;
   padding-left:20px;
   background:#f0f0f0;
 }
@@ -223,9 +223,13 @@ body{
   color:#555;
 }
 #text{
-  position:absolute;
-  top:30px;
+  position:relative;
+  top:15px;
+  padding-bottom:9.5px;
+  padding-right:10px;
 }
+
+
 
 #dropmenu{
   position:fixed;
@@ -279,9 +283,9 @@ z-index:100000;
   width:50px;
 }
 .rinp{
-  outline-width: 0;
+  outline-width:0;
   border-radius: 25px;
-  width:96.5%;
+  width:96.4%;
   background:#fff;
   border:1px solid #ccc;
   padding:3.3%;
@@ -337,4 +341,49 @@ z-index:100000;
 #utop:hover{
   border-top-right-radius:15px;
   border-top-left-radius:15px;
+}
+.reply{
+  color:black;
+  margin-top:11px;
+  font-size:13px;
+  opacity:0.8;
+  position:absolute;
+  text-decoration: none;
+}
+.context{
+  color:black;
+  margin-top:11px;
+  font-size:13px;
+  opacity:0.8;
+  position:absolute;
+  text-decoration: none;
+}
+.upcom{
+  position:absolute;
+  margin-top:12px;
+  margin-left:-10px;
+  width:20px;
+  opacity:0.8;
+}
+.upcom:hover{
+  opacity:1;
+}
+.downcom{
+  position:absolute;
+  margin-top:12px;
+  margin-left:20px;
+  width:20px;
+  opacity:0.8;
+}
+.downcom:hover{
+  opacity:1;
+}
+.cscore{
+  color:black;
+  opacity:0.8;
+  font-size:11px;
+  position:relative;
+  top:10px;
+  left:80px;
+  text-decoration: none;
 }

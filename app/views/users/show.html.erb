@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>Iomha</title>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <%= stylesheet_link_tag "indexstyle.css" %>
+</head>
+
+<body>
+	
+  <div id="header">
+	  <a href="/"><img src="/images/logo.png" id="logo"></a>
+	  <a href=""><img src="/images/tab.png" id="tab"></a>
+	  
+	  <% unless current_user then %>
+	    <a href="/login"><p id="signin">Sign in</p></a>
+	    <a href="/signup"><p id="signup">Sign up</p></a>
+	  <% else %>
+	    <% if current_user.notifications > 0 then %>
+	      <a href=""><img src="/images/trired.png" id="tri"></a>
+	    <% else %>
+	      <% if current_user.notifications > 0 then %>
+	      <a href=""><img src="/images/trired.png" id="tri"></a>
+	    <% else %>
+	      <a href=""><img src="/images/tri.png" id="tri"></a>
+	    <% end %>
+	    <% end %>
+	    <a href="/user/<%=current_user.username%>"><p id="c_user"><%=current_user.username%></p></a>
+	  <% end %>
+  </div>
+  
+  <div id="umenu">
+    <div class="u-content">
+      <a href="/messages" id="utop">Messages</a>
+      <a href="/post">Post</a>
+      <a href="/themes">Themes</a>
+      <a href="/logout" id="ubottom">Sign out</a></a>
+    </div>
+  </div>
+  
+  <div id="dropmenu">
+    <div class="dropdown-content">
+      <a href="/help" id="top">Help</a>
+      <a href="/contact">Contact</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/rules"id="bottom">Rules</a>
+    </div>
+  </div>
+
+  <div id="article">
+    <h1><%= @user.username %></h1>
+      
+    <div id="content">
+	  <% @posts = @posts.order(:created_at).limit(1000) %>
+      <% @posts.reverse_order! %>
+	  <% @posts.each do |post| %>
+	    <% @time = Time.now-post.created_at %>
+	    <% if @time > 31557600 then %>
+	      <% @time /= 31557600 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' years ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' year ago' %>
+	      <% end %>
+	    <%elsif @time > 2592000 then %>
+	      <% @time /= 2592000 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' months ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' month ago' %>
+	      <% end %>
+	    <%elsif @time > 604800 then %>
+	      <% @time /= 604800 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' weeks ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' week ago' %>
+	      <% end %>
+	    <%elsif @time > 86400 then %>
+	      <% @time /= 86400 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' days ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' day ago' %>
+	      <% end %>
+	    <%elsif @time > 3600 then %>
+	      <% @time /= 3600 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' hours ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' hour ago' %>
+	      <% end %>
+	    <%elsif @time > 60 then %>
+	      <% @time /= 60 %>
+	      <% @time = @time.to_i %>
+	      <% if @time > 1 then %>
+	        <% @time = @time.to_s + ' minutes ago' %>
+	      <% else %>
+	        <% @time = @time.to_s + ' minute ago' %>
+	      <% end %>
+	    <% else %>
+	      <% @time = ' just now' %>
+	    <% end %>
+        <div id="post">
+		  <div id="score"><%= post.score %></div>
+		  <a href="" id="upp" ><img src="/images/up-arrow.png" id="<%=post.sub%>/<%=post.id%>" class="up" ></a>
+		  <a href="" id="downp" ><img src="/images/down-arrow.png" id="<%=post.sub%>/<%=post.id%>" class="down"  ></a>
+          <a href="/i/<%= post.sub %>/<%= post.id %>" id="ptitle"> <%= post.title %> </a>
+          <div id="info">submitted <%=@time%> by <a href="/user/<%=post.author%>"><%= post.author %></a> to <a href="/i/<%=post.sub %>">/i/<%= post.sub %></a></div>
+          <div id="commentsd"><%=post.comments.length.to_s%> comments</div>
+        </div>
+      <% end %>
+    </div>
+      
+  </div>
+  
+  <%= javascript_include_tag "jquery.js", "index.js", "posts.js"  %>
+  
+  <% if current_user then %>
+      <style>
+		  body{
+		      background-image:url('<%=current_user.background%>');
+	      }
+	      h1{
+	          background:<%=current_user.main_color%> !important;
+	      }
+	      #header{
+	          background:<%=current_user.main_color%> !important;
+	      }
+	      #formsub{
+		 	          background:<%=current_user.main_color%> !important;
+
+	      }
+	      #ptitle{
+			  color:<%=current_user.snd_color %> !important;
+		  }
+      </style>
+  <% end %>
+  
+</body>
+
+</html>
